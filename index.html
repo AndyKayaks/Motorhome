@@ -54,9 +54,9 @@ html,body{min-height:100%}
 body{
   margin:0;
   padding:
-  calc(12px + env(safe-area-inset-top))
-  16px
-  calc(28px + env(safe-area-inset-bottom));
+    calc(12px + env(safe-area-inset-top))
+    16px
+    calc(28px + env(safe-area-inset-bottom));
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
   background:var(--bg);
   color:var(--text);
@@ -84,7 +84,7 @@ h1{
 .status{
   font-size:13px;
   color:var(--muted);
-  margin:10px 0 22px;
+  margin:10px 0 16px;
   line-height:1.45;
 }
 
@@ -92,6 +92,32 @@ h1{
 .status.ok strong{color:var(--ok)}
 .status.warn strong{color:var(--warn)}
 .status.bad strong{color:var(--bad)}
+
+.local-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  text-decoration:none;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:var(--card);
+  color:var(--text);
+  padding:10px 15px;
+  font-size:13px;
+  font-weight:650;
+  margin:0 0 8px;
+  box-shadow:0 2px 7px var(--shadow);
+}
+
+.local-link:active{
+  transform:scale(.98);
+}
+
+.local-icon{
+  font-size:15px;
+  line-height:1;
+}
 
 .card{
   background:var(--card);
@@ -249,6 +275,14 @@ button{
   </div>
 
   <div class="errorBox" id="errorBox"></div>
+
+  <a
+    class="local-link"
+    href="http://motorhome.local/"
+  >
+    <span class="local-icon">⌂</span>
+    Local Dashboard
+  </a>
 
   <section class="card">
     <div class="label">Front</div>
