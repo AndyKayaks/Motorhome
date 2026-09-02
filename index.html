@@ -3,65 +3,248 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <link rel="apple-touch-icon" href="motorhome-icon.png">
+
+<link rel="apple-touch-icon" href="motorhome-icon.png">
 <link rel="icon" type="image/png" href="motorhome-icon.png">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Motorhome Monitor">
-<meta name="theme-color" content="#111111" id="themeColor">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#07101d">
+
 <title>Motorhome Monitor</title>
+
 <style>
 :root{
   color-scheme:dark;
-  --bg:#111; --card:#222; --text:#fff; --secondary:#bbb; --muted:#888;
-  --border:#343434; --ok:#8fd19e; --warn:#ffd166; --bad:#ff7b7b;
-  --shadow:rgba(0,0,0,.35); --button:#333;
+  --bg:#111;
+  --card:#222;
+  --text:#fff;
+  --secondary:#bbb;
+  --muted:#888;
+  --border:#343434;
+  --ok:#8fd19e;
+  --warn:#ffd166;
+  --bad:#ff7b7b;
+  --shadow:rgba(0,0,0,.35);
+  --button:#333;
 }
+
 @media (prefers-color-scheme:light){
   :root{
     color-scheme:light;
-    --bg:#f3f4f6; --card:#fff; --text:#111827; --secondary:#4b5563; --muted:#6b7280;
-    --border:#e5e7eb; --ok:#287a3d; --warn:#8a6500; --bad:#b42318;
-    --shadow:rgba(0,0,0,.10); --button:#e5e7eb;
+    --bg:#f3f4f6;
+    --card:#fff;
+    --text:#111827;
+    --secondary:#4b5563;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --ok:#287a3d;
+    --warn:#8a6500;
+    --bad:#b42318;
+    --shadow:rgba(0,0,0,.10);
+    --button:#e5e7eb;
   }
 }
+
 *{box-sizing:border-box}
+
+html,body{min-height:100%}
+
 body{
-  margin:0; padding:20px 16px calc(28px + env(safe-area-inset-bottom));
+  margin:0;
+  padding:20px 16px calc(28px + env(safe-area-inset-bottom));
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  background:var(--bg); color:var(--text); text-align:center;
+  background:var(--bg);
+  color:var(--text);
+  text-align:center;
 }
-.wrap{max-width:430px;margin:auto}
-h1{font-size:28px;margin:5px 0 2px}
-.remote{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.status{font-size:13px;color:var(--muted);margin:10px 0 22px;line-height:1.45}
+
+.wrap{
+  max-width:430px;
+  margin:auto;
+}
+
+h1{
+  font-size:28px;
+  margin:5px 0 2px;
+}
+
+.remote{
+  font-size:12px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+
+.status{
+  font-size:13px;
+  color:var(--muted);
+  margin:10px 0 22px;
+  line-height:1.45;
+}
+
 .status strong{font-weight:700}
 .status.ok strong{color:var(--ok)}
 .status.warn strong{color:var(--warn)}
 .status.bad strong{color:var(--bad)}
+
 .card{
-  background:var(--card); border-radius:18px; padding:22px;
-  margin:15px 0; box-shadow:0 4px 12px var(--shadow);
+  background:var(--card);
+  border-radius:18px;
+  padding:22px;
+  margin:15px 0;
+  box-shadow:0 4px 12px var(--shadow);
 }
-.label{font-size:20px;color:var(--secondary)}
-.temp{font-size:48px;font-weight:750;letter-spacing:-.03em;margin-top:8px}
-.meta{font-size:12px;color:var(--muted);margin-top:8px}
-.footer{font-size:12px;color:var(--muted);line-height:1.6;margin-top:24px}
+
+.label{
+  font-size:20px;
+  color:var(--secondary);
+}
+
+.temp{
+  font-size:48px;
+  font-weight:750;
+  letter-spacing:-.03em;
+  margin-top:8px;
+}
+
+.footer{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.6;
+  margin-top:24px;
+}
+
 button{
-  border:0;border-radius:11px;background:var(--button);color:var(--text);
-  padding:11px 16px;font:inherit;font-weight:650;margin-top:12px;cursor:pointer
+  border:0;
+  border-radius:11px;
+  background:var(--button);
+  color:var(--text);
+  padding:11px 16px;
+  font:inherit;
+  font-weight:650;
+  margin-top:12px;
+  cursor:pointer;
 }
+
 .errorBox{
-  display:none;background:var(--card);border:1px solid var(--border);
-  border-radius:14px;padding:14px;margin:16px 0;color:var(--bad);font-size:13px
+  display:none;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  margin:16px 0;
+  color:var(--bad);
+  font-size:13px;
+}
+
+/* Splash screen */
+#splash{
+  position:fixed;
+  z-index:9999;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:
+    calc(20px + env(safe-area-inset-top))
+    24px
+    calc(20px + env(safe-area-inset-bottom));
+  background:#07101d;
+  opacity:1;
+  visibility:visible;
+  transition:opacity .65s ease,visibility .65s ease;
+}
+
+#splash.hide{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+.splash-inner{
+  width:min(84vw,360px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.splash-icon{
+  width:min(76vw,300px);
+  height:auto;
+  display:block;
+  border-radius:22%;
+  box-shadow:0 18px 45px rgba(0,0,0,.42);
+  animation:splashIn .7s ease both;
+}
+
+.splash-title{
+  margin-top:22px;
+  color:#fff;
+  font-size:21px;
+  font-weight:750;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  animation:splashIn .7s .12s ease both;
+}
+
+.splash-status{
+  margin-top:10px;
+  color:#aeb9c9;
+  font-size:14px;
+  animation:splashIn .7s .2s ease both;
+}
+
+.splash-dot{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  margin-left:5px;
+  border-radius:50%;
+  background:#8fd19e;
+  animation:pulse 1.1s infinite ease-in-out;
+}
+
+@keyframes splashIn{
+  from{opacity:0;transform:translateY(8px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+@keyframes pulse{
+  0%,100%{opacity:.3}
+  50%{opacity:1}
+}
+
+@media (prefers-reduced-motion:reduce){
+  #splash{transition:none}
+  .splash-icon,.splash-title,.splash-status,.splash-dot{animation:none}
 }
 </style>
 </head>
+
 <body>
+
+<div id="splash" aria-hidden="true">
+  <div class="splash-inner">
+    <img class="splash-icon" src="motorhome-icon.png" alt="">
+    <div class="splash-title">Motorhome Monitor</div>
+    <div class="splash-status">
+      Connecting<span class="splash-dot"></span>
+    </div>
+  </div>
+</div>
+
 <main class="wrap">
+
   <h1>Motorhome Monitor</h1>
   <div class="remote">Remote</div>
 
-  <div class="status" id="status">Connecting to Motorhome data…</div>
+  <div class="status" id="status">
+    Connecting to Motorhome data…
+  </div>
+
   <div class="errorBox" id="errorBox"></div>
 
   <section class="card">
@@ -85,82 +268,169 @@ button{
     ThingSpeak channel 3479295<br>
     Dashboard refreshes automatically every 60 seconds
   </div>
+
 </main>
 
 <script>
 const CHANNEL_ID = 3479295;
-const API = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=1`;
+const API =
+  `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=1`;
+
 const REFRESH_MS = 60000;
 const STALE_WARN_MINUTES = 3;
 const OFFLINE_MINUTES = 10;
+
+const SPLASH_MIN_MS = 2200;
+const SPLASH_MAX_MS = 6000;
+
+const splashStarted = Date.now();
+let splashClosed = false;
 
 const $ = id => document.getElementById(id);
 
 function temp(value){
   const n = Number.parseFloat(value);
-  return Number.isFinite(n) ? `${n.toFixed(1)} °C` : "--.- °C";
+  return Number.isFinite(n)
+    ? `${n.toFixed(1)} °C`
+    : "--.- °C";
 }
 
 function ageText(ms){
-  const seconds = Math.max(0, Math.floor(ms / 1000));
-  if(seconds < 60) return `${seconds} sec ago`;
-  const minutes = Math.floor(seconds / 60);
-  if(minutes < 60) return `${minutes} min ago`;
-  const hours = Math.floor(minutes / 60);
-  const rem = minutes % 60;
-  if(hours < 24) return rem ? `${hours} hr ${rem} min ago` : `${hours} hr ago`;
-  const days = Math.floor(hours / 24);
+  const seconds = Math.max(0,Math.floor(ms/1000));
+
+  if(seconds < 60)
+    return `${seconds} sec ago`;
+
+  const minutes = Math.floor(seconds/60);
+
+  if(minutes < 60)
+    return `${minutes} min ago`;
+
+  const hours = Math.floor(minutes/60);
+  const rem = minutes%60;
+
+  if(hours < 24){
+    return rem
+      ? `${hours} hr ${rem} min ago`
+      : `${hours} hr ago`;
+  }
+
+  const days = Math.floor(hours/24);
+
   return `${days} day${days===1?"":"s"} ago`;
 }
 
 function setStatus(createdAt){
   const el = $("status");
   const t = new Date(createdAt);
-  const age = Date.now() - t.getTime();
-  const mins = age / 60000;
-  const clock = t.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"});
-  const date = t.toLocaleDateString([], {weekday:"short",day:"numeric",month:"short"});
+  const age = Date.now()-t.getTime();
+  const mins = age/60000;
 
-  el.className = "status";
+  const clock =
+    t.toLocaleTimeString([],{
+      hour:"2-digit",
+      minute:"2-digit",
+      second:"2-digit"
+    });
+
+  const date =
+    t.toLocaleDateString([],{
+      weekday:"short",
+      day:"numeric",
+      month:"short"
+    });
+
+  el.className="status";
+
   if(mins >= OFFLINE_MINUTES){
     el.classList.add("bad");
-    el.innerHTML = `<strong>Motorhome may be offline</strong><br>Last update ${ageText(age)} · ${date} ${clock}`;
-  } else if(mins >= STALE_WARN_MINUTES){
+    el.innerHTML =
+      `<strong>Motorhome may be offline</strong><br>`+
+      `Last update ${ageText(age)} · ${date} ${clock}`;
+  }
+  else if(mins >= STALE_WARN_MINUTES){
     el.classList.add("warn");
-    el.innerHTML = `<strong>Update delayed</strong><br>Last update ${ageText(age)} · ${clock}`;
-  } else {
+    el.innerHTML =
+      `<strong>Update delayed</strong><br>`+
+      `Last update ${ageText(age)} · ${clock}`;
+  }
+  else{
     el.classList.add("ok");
-    el.innerHTML = `<strong>Motorhome online</strong><br>Updated ${ageText(age)} · ${clock}`;
+    el.innerHTML =
+      `<strong>Motorhome online</strong><br>`+
+      `Updated ${ageText(age)} · ${clock}`;
   }
 }
+
+function closeSplash(){
+  if(splashClosed) return;
+
+  splashClosed=true;
+  $("splash").classList.add("hide");
+
+  window.setTimeout(()=>{
+    const splash=$("splash");
+    if(splash) splash.remove();
+  },800);
+}
+
+function closeSplashWhenReady(){
+  const elapsed=Date.now()-splashStarted;
+  const remaining=Math.max(0,SPLASH_MIN_MS-elapsed);
+  window.setTimeout(closeSplash,remaining);
+}
+
+window.setTimeout(closeSplash,SPLASH_MAX_MS);
 
 async function loadData(){
-  const errorBox = $("errorBox");
-  try{
-    const response = await fetch(API, {cache:"no-store"});
-    if(!response.ok) throw new Error(`ThingSpeak returned HTTP ${response.status}`);
-    const data = await response.json();
-    if(!data.feeds || !data.feeds.length) throw new Error("No readings have been returned yet.");
+  const errorBox=$("errorBox");
 
-    const reading = data.feeds[data.feeds.length - 1];
-    $("front").textContent = temp(reading.field1);
-    $("back").textContent = temp(reading.field2);
-    $("outside").textContent = temp(reading.field3);
+  try{
+    const response=await fetch(API,{cache:"no-store"});
+
+    if(!response.ok){
+      throw new Error(
+        `ThingSpeak returned HTTP ${response.status}`
+      );
+    }
+
+    const data=await response.json();
+
+    if(!data.feeds || !data.feeds.length){
+      throw new Error(
+        "No readings have been returned yet."
+      );
+    }
+
+    const reading=data.feeds[data.feeds.length-1];
+
+    $("front").textContent=temp(reading.field1);
+    $("back").textContent=temp(reading.field2);
+    $("outside").textContent=temp(reading.field3);
+
     setStatus(reading.created_at);
 
-    errorBox.style.display = "none";
-    errorBox.textContent = "";
-  }catch(err){
-    $("status").className = "status bad";
-    $("status").innerHTML = "<strong>Unable to reach remote data</strong>";
-    errorBox.textContent = err.message;
-    errorBox.style.display = "block";
+    errorBox.style.display="none";
+    errorBox.textContent="";
+  }
+  catch(err){
+    $("status").className="status bad";
+    $("status").innerHTML=
+      "<strong>Unable to reach remote data</strong>";
+
+    errorBox.textContent=err.message;
+    errorBox.style.display="block";
+  }
+  finally{
+    closeSplashWhenReady();
   }
 }
 
-$("refresh").addEventListener("click", loadData);
+$("refresh").addEventListener("click",loadData);
+
 loadData();
-setInterval(loadData, REFRESH_MS);
+setInterval(loadData,REFRESH_MS);
 </script>
+
 </body>
 </html>
