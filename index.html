@@ -26,6 +26,7 @@
   --ok:#8fd19e;
   --warn:#ffd166;
   --bad:#ff7b7b;
+  --frost:#78bfff;
   --shadow:rgba(0,0,0,.35);
   --button:#333;
 }
@@ -37,19 +38,25 @@
     --card:#fff;
     --text:#111827;
     --secondary:#4b5563;
-    --muted:#6b7280;
+    --muted:#9ca3af;
     --border:#e5e7eb;
     --ok:#287a3d;
     --warn:#8a6500;
     --bad:#b42318;
+    --frost:#2778c4;
     --shadow:rgba(0,0,0,.10);
     --button:#e5e7eb;
   }
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
-html,body{min-height:100%}
+html,
+body{
+  min-height:100%;
+}
 
 body{
   margin:0;
@@ -57,7 +64,12 @@ body{
     calc(12px + env(safe-area-inset-top))
     16px
     calc(28px + env(safe-area-inset-bottom));
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Arial,
+    sans-serif;
   background:var(--bg);
   color:var(--text);
   text-align:center;
@@ -84,14 +96,83 @@ h1{
 .status{
   font-size:13px;
   color:var(--muted);
-  margin:10px 0 16px;
+  margin:10px 0 12px;
   line-height:1.45;
 }
 
-.status strong{font-weight:700}
-.status.ok strong{color:var(--ok)}
-.status.warn strong{color:var(--warn)}
-.status.bad strong{color:var(--bad)}
+.status strong{
+  font-weight:700;
+}
+
+.status.ok strong{
+  color:var(--ok);
+}
+
+.status.warn strong{
+  color:var(--warn);
+}
+
+.status.bad strong{
+  color:var(--bad);
+}
+
+/* ================================
+   STATUS ICON STRIP
+   ================================ */
+
+.statusIcons{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  min-height:48px;
+  margin:4px 0 16px;
+}
+
+.statusIcon{
+  width:46px;
+  height:46px;
+  border-radius:14px;
+  background:var(--card);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 3px 10px var(--shadow);
+  transition:
+    color .25s ease,
+    opacity .25s ease;
+}
+
+.statusIcon svg{
+  width:27px;
+  height:27px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+/* Inverter is always visible */
+.inverterIcon{
+  color:var(--muted);
+}
+
+.inverterIcon.on{
+  color:var(--ok);
+}
+
+/* Frost is hidden unless required */
+.frostIcon{
+  color:var(--frost);
+  display:none;
+}
+
+.frostIcon.show{
+  display:flex;
+}
+
+/* ================================ */
 
 .local-link{
   display:inline-flex;
@@ -139,25 +220,6 @@ h1{
   margin-top:8px;
 }
 
-.inverter-state{
-  font-size:42px;
-  font-weight:800;
-  letter-spacing:.03em;
-  margin-top:8px;
-}
-
-.inverter-on{
-  color:var(--ok);
-}
-
-.inverter-off{
-  color:var(--muted);
-}
-
-.inverter-unknown{
-  color:var(--warn);
-}
-
 .footer{
   font-size:12px;
   color:var(--muted);
@@ -189,6 +251,7 @@ button{
 }
 
 /* Splash screen */
+
 #splash{
   position:fixed;
   z-index:9999;
@@ -203,7 +266,9 @@ button{
   background:#07101d;
   opacity:1;
   visibility:visible;
-  transition:opacity .65s ease,visibility .65s ease;
+  transition:
+    opacity .65s ease,
+    visibility .65s ease;
 }
 
 #splash.hide{
@@ -256,18 +321,38 @@ button{
 }
 
 @keyframes splashIn{
-  from{opacity:0;transform:translateY(8px) scale(.97)}
-  to{opacity:1;transform:translateY(0) scale(1)}
+  from{
+    opacity:0;
+    transform:translateY(8px) scale(.97);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
 }
 
 @keyframes pulse{
-  0%,100%{opacity:.3}
-  50%{opacity:1}
+  0%,100%{
+    opacity:.3;
+  }
+
+  50%{
+    opacity:1;
+  }
 }
 
 @media (prefers-reduced-motion:reduce){
-  #splash{transition:none}
-  .splash-icon,.splash-title,.splash-status,.splash-dot{animation:none}
+  #splash{
+    transition:none;
+  }
+
+  .splash-icon,
+  .splash-title,
+  .splash-status,
+  .splash-dot{
+    animation:none;
+  }
 }
 </style>
 </head>
@@ -275,25 +360,46 @@ button{
 <body>
 
 <div id="splash" aria-hidden="true">
+
   <div class="splash-inner">
-    <img class="splash-icon" src="motorhome-icon.png" alt="">
-    <div class="splash-title">Motorhome Monitor</div>
+
+    <img
+      class="splash-icon"
+      src="motorhome-icon.png"
+      alt=""
+    >
+
+    <div class="splash-title">
+      Motorhome Monitor
+    </div>
+
     <div class="splash-status">
       Connecting<span class="splash-dot"></span>
     </div>
+
   </div>
+
 </div>
 
 <main class="wrap">
 
   <h1>Motorhome Monitor</h1>
-  <div class="remote">Remote</div>
 
-  <div class="status" id="status">
+  <div class="remote">
+    Remote
+  </div>
+
+  <div
+    class="status"
+    id="status"
+  >
     Connecting to Motorhome data…
   </div>
 
-  <div class="errorBox" id="errorBox"></div>
+  <div
+    class="errorBox"
+    id="errorBox"
+  ></div>
 
   <a
     class="local-link"
@@ -303,256 +409,609 @@ button{
     Local Dashboard
   </a>
 
-  <section class="card">
-    <div class="label">Front</div>
-    <div class="temp" id="front">--.- °C</div>
-  </section>
 
-  <section class="card">
-    <div class="label">Back</div>
-    <div class="temp" id="back">--.- °C</div>
-  </section>
+  <!-- =============================
+       MOTORHOME STATUS ICONS
+       ============================= -->
 
-  <section class="card">
-    <div class="label">Outside</div>
-    <div class="temp" id="outside">--.- °C</div>
-  </section>
+  <div
+    class="statusIcons"
+    aria-label="Motorhome status"
+  >
 
-  <section class="card">
-    <div class="label">Inverter</div>
+    <!-- INVERTER -->
+
     <div
-      class="inverter-state inverter-unknown"
-      id="inverter"
+      class="statusIcon inverterIcon"
+      id="inverterIcon"
+      title="Inverter supply OFF"
+      aria-label="Inverter supply OFF"
     >
-      UNKNOWN
+
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+
+        <rect
+          x="3"
+          y="5"
+          width="18"
+          height="14"
+          rx="2"
+        ></rect>
+
+        <path
+          d="M7 12
+             c1.2-2 2.4-2 3.6 0
+             s2.4 2 3.6 0
+             2.4-2 3.6 0"
+        ></path>
+
+      </svg>
+
     </div>
+
+
+    <!-- FROST -->
+
+    <div
+      class="statusIcon frostIcon"
+      id="frostIcon"
+      title="Outside temperature below 3°C"
+      aria-label="Outside temperature below 3 degrees Celsius"
+    >
+
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+
+        <path d="M12 2v20"></path>
+
+        <path d="M4.22 6.5l15.56 11"></path>
+
+        <path d="M19.78 6.5l-15.56 11"></path>
+
+        <path d="M9 4l3 3 3-3"></path>
+
+        <path d="M9 20l3-3 3 3"></path>
+
+        <path d="M5.5 8.3l4.1.8-.8-4"></path>
+
+        <path d="M18.5 15.7l-4.1-.8.8 4"></path>
+
+        <path d="M18.5 8.3l-4.1.8.8-4"></path>
+
+        <path d="M5.5 15.7l4.1-.8-.8 4"></path>
+
+      </svg>
+
+    </div>
+
+  </div>
+
+
+  <section class="card">
+
+    <div class="label">
+      Front
+    </div>
+
+    <div
+      class="temp"
+      id="front"
+    >
+      --.- °C
+    </div>
+
   </section>
 
-  <button type="button" id="refresh">Refresh now</button>
+
+  <section class="card">
+
+    <div class="label">
+      Back
+    </div>
+
+    <div
+      class="temp"
+      id="back"
+    >
+      --.- °C
+    </div>
+
+  </section>
+
+
+  <section class="card">
+
+    <div class="label">
+      Outside
+    </div>
+
+    <div
+      class="temp"
+      id="outside"
+    >
+      --.- °C
+    </div>
+
+  </section>
+
+
+  <button
+    type="button"
+    id="refresh"
+  >
+    Refresh now
+  </button>
+
 
   <div class="footer">
-    ThingSpeak channel 3479295<br>
+
+    ThingSpeak channel 3479295
+    <br>
+
     Dashboard refreshes automatically every 60 seconds
+
   </div>
 
 </main>
 
+
 <script>
+
+/* ==================================================
+   SETTINGS
+   ================================================== */
+
 const CHANNEL_ID = 3479295;
 
 const API =
   `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=1`;
 
 const REFRESH_MS = 60000;
+
 const STALE_WARN_MINUTES = 3;
+
 const OFFLINE_MINUTES = 10;
 
+/* Frost icon appears below this temperature */
+
+const FROST_WARNING_TEMP_C = 3.0;
+
+
+/* ==================================================
+   SPLASH
+   ================================================== */
+
 const SPLASH_MIN_MS = 2200;
+
 const SPLASH_MAX_MS = 6000;
 
 const splashStarted = Date.now();
+
 let splashClosed = false;
 
-const $ = id => document.getElementById(id);
+
+/* ==================================================
+   HELPERS
+   ================================================== */
+
+const $ = id =>
+  document.getElementById(id);
+
 
 function temp(value){
-  const n = Number.parseFloat(value);
+
+  const n =
+    Number.parseFloat(value);
 
   return Number.isFinite(n)
     ? `${n.toFixed(1)} °C`
     : "--.- °C";
 }
 
-function setInverter(value){
-  const el = $("inverter");
-  const n = Number.parseInt(value,10);
 
-  el.className="inverter-state";
+/* ==================================================
+   INVERTER
+   ================================================== */
+
+function setInverter(value){
+
+  const el =
+    $("inverterIcon");
+
+  const n =
+    Number.parseInt(
+      value,
+      10
+    );
+
+  el.classList.remove("on");
 
   if(n === 1){
-    el.textContent="ON";
-    el.classList.add("inverter-on");
-  }
-  else if(n === 0){
-    el.textContent="OFF";
-    el.classList.add("inverter-off");
+
+    el.classList.add("on");
+
+    el.title =
+      "Inverter supply ON";
+
+    el.setAttribute(
+      "aria-label",
+      "Inverter supply ON"
+    );
+
   }
   else{
-    el.textContent="UNKNOWN";
-    el.classList.add("inverter-unknown");
+
+    el.title =
+      "Inverter supply OFF";
+
+    el.setAttribute(
+      "aria-label",
+      "Inverter supply OFF"
+    );
+
   }
+
 }
 
-function ageText(ms){
-  const seconds = Math.max(0,Math.floor(ms/1000));
 
-  if(seconds < 60)
+/* ==================================================
+   FROST WARNING
+   ================================================== */
+
+function setFrostWarning(value){
+
+  const el =
+    $("frostIcon");
+
+  const temperature =
+    Number.parseFloat(value);
+
+  if(
+    Number.isFinite(temperature) &&
+    temperature < FROST_WARNING_TEMP_C
+  ){
+
+    el.classList.add("show");
+
+    el.title =
+      `Outside temperature ${temperature.toFixed(1)}°C`;
+
+  }
+  else{
+
+    el.classList.remove("show");
+
+  }
+
+}
+
+
+/* ==================================================
+   AGE TEXT
+   ================================================== */
+
+function ageText(ms){
+
+  const seconds =
+    Math.max(
+      0,
+      Math.floor(ms / 1000)
+    );
+
+  if(seconds < 60){
+
     return `${seconds} sec ago`;
 
-  const minutes = Math.floor(seconds/60);
+  }
 
-  if(minutes < 60)
+  const minutes =
+    Math.floor(
+      seconds / 60
+    );
+
+  if(minutes < 60){
+
     return `${minutes} min ago`;
 
-  const hours = Math.floor(minutes/60);
-  const rem = minutes%60;
+  }
+
+  const hours =
+    Math.floor(
+      minutes / 60
+    );
+
+  const rem =
+    minutes % 60;
 
   if(hours < 24){
+
     return rem
       ? `${hours} hr ${rem} min ago`
       : `${hours} hr ago`;
+
   }
 
-  const days = Math.floor(hours/24);
+  const days =
+    Math.floor(
+      hours / 24
+    );
 
-  return `${days} day${days===1?"":"s"} ago`;
+  return `${days} day${days === 1 ? "" : "s"} ago`;
+
 }
 
+
+/* ==================================================
+   MOTORHOME ONLINE STATUS
+   ================================================== */
+
 function setStatus(createdAt){
-  const el = $("status");
-  const t = new Date(createdAt);
-  const age = Date.now()-t.getTime();
-  const mins = age/60000;
+
+  const el =
+    $("status");
+
+  const t =
+    new Date(createdAt);
+
+  const age =
+    Date.now() -
+    t.getTime();
+
+  const mins =
+    age / 60000;
 
   const clock =
-    t.toLocaleTimeString([],{
-      hour:"2-digit",
-      minute:"2-digit",
-      second:"2-digit"
-    });
+    t.toLocaleTimeString(
+      [],
+      {
+        hour:"2-digit",
+        minute:"2-digit",
+        second:"2-digit"
+      }
+    );
 
   const date =
-    t.toLocaleDateString([],{
-      weekday:"short",
-      day:"numeric",
-      month:"short"
-    });
+    t.toLocaleDateString(
+      [],
+      {
+        weekday:"short",
+        day:"numeric",
+        month:"short"
+      }
+    );
 
-  el.className="status";
+  el.className =
+    "status";
+
 
   if(mins >= OFFLINE_MINUTES){
+
     el.classList.add("bad");
 
     el.innerHTML =
-      `<strong>Motorhome may be offline</strong><br>`+
+      `<strong>Motorhome may be offline</strong><br>` +
       `Last update ${ageText(age)} · ${date} ${clock}`;
+
   }
   else if(mins >= STALE_WARN_MINUTES){
+
     el.classList.add("warn");
 
     el.innerHTML =
-      `<strong>Update delayed</strong><br>`+
+      `<strong>Update delayed</strong><br>` +
       `Last update ${ageText(age)} · ${clock}`;
+
   }
   else{
+
     el.classList.add("ok");
 
     el.innerHTML =
-      `<strong>Motorhome online</strong><br>`+
+      `<strong>Motorhome online</strong><br>` +
       `Updated ${ageText(age)} · ${clock}`;
+
   }
+
 }
+
+
+/* ==================================================
+   SPLASH FUNCTIONS
+   ================================================== */
 
 function closeSplash(){
-  if(splashClosed) return;
 
-  splashClosed=true;
-  $("splash").classList.add("hide");
+  if(splashClosed){
+    return;
+  }
 
-  window.setTimeout(()=>{
-    const splash=$("splash");
-    if(splash) splash.remove();
-  },800);
+  splashClosed = true;
+
+  $("splash")
+    .classList
+    .add("hide");
+
+
+  window.setTimeout(
+    () => {
+
+      const splash =
+        $("splash");
+
+      if(splash){
+        splash.remove();
+      }
+
+    },
+    800
+  );
+
 }
 
+
 function closeSplashWhenReady(){
-  const elapsed=Date.now()-splashStarted;
-  const remaining=Math.max(0,SPLASH_MIN_MS-elapsed);
+
+  const elapsed =
+    Date.now() -
+    splashStarted;
+
+  const remaining =
+    Math.max(
+      0,
+      SPLASH_MIN_MS - elapsed
+    );
 
   window.setTimeout(
     closeSplash,
     remaining
   );
+
 }
+
 
 window.setTimeout(
   closeSplash,
   SPLASH_MAX_MS
 );
 
+
+/* ==================================================
+   LOAD THINGSPEAK DATA
+   ================================================== */
+
 async function loadData(){
-  const errorBox=$("errorBox");
+
+  const errorBox =
+    $("errorBox");
 
   try{
-    const response=await fetch(
-      API,
-      {cache:"no-store"}
-    );
+
+    const response =
+      await fetch(
+        API,
+        {
+          cache:"no-store"
+        }
+      );
+
 
     if(!response.ok){
+
       throw new Error(
         `ThingSpeak returned HTTP ${response.status}`
       );
+
     }
 
-    const data=await response.json();
 
-    if(!data.feeds || !data.feeds.length){
+    const data =
+      await response.json();
+
+
+    if(
+      !data.feeds ||
+      !data.feeds.length
+    ){
+
       throw new Error(
         "No readings have been returned yet."
       );
+
     }
 
-    const reading=
-      data.feeds[data.feeds.length-1];
 
-    $("front").textContent=
+    const reading =
+      data.feeds[
+        data.feeds.length - 1
+      ];
+
+
+    /* Temperatures */
+
+    $("front").textContent =
       temp(reading.field1);
 
-    $("back").textContent=
+    $("back").textContent =
       temp(reading.field2);
 
-    $("outside").textContent=
+    $("outside").textContent =
       temp(reading.field3);
+
+
+    /* Status icons */
 
     setInverter(
       reading.field4
     );
 
+    setFrostWarning(
+      reading.field3
+    );
+
+
+    /* Online status */
+
     setStatus(
       reading.created_at
     );
 
-    errorBox.style.display="none";
-    errorBox.textContent="";
+
+    errorBox.style.display =
+      "none";
+
+    errorBox.textContent =
+      "";
+
   }
   catch(err){
-    $("status").className="status bad";
 
-    $("status").innerHTML=
+    $("status").className =
+      "status bad";
+
+    $("status").innerHTML =
       "<strong>Unable to reach remote data</strong>";
 
-    errorBox.textContent=err.message;
-    errorBox.style.display="block";
 
-    setInverter(null);
+    errorBox.textContent =
+      err.message;
+
+    errorBox.style.display =
+      "block";
+
   }
   finally{
+
     closeSplashWhenReady();
+
   }
+
 }
 
-$("refresh").addEventListener(
-  "click",
-  loadData
-);
+
+/* ==================================================
+   REFRESH
+   ================================================== */
+
+$("refresh")
+  .addEventListener(
+    "click",
+    loadData
+  );
+
 
 loadData();
+
 
 setInterval(
   loadData,
   REFRESH_MS
 );
+
 </script>
 
 </body>
