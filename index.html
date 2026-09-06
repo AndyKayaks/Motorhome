@@ -17,35 +17,41 @@
 <style>
 :root{
   color-scheme:dark;
-  --bg:#111;
-  --card:#222;
-  --text:#fff;
-  --secondary:#bbb;
-  --muted:#888;
-  --border:#343434;
-  --ok:#8fd19e;
+  --bg:#08111d;
+  --panel:#131d29;
+  --panel2:#182330;
+  --text:#ffffff;
+  --secondary:#aeb9c9;
+  --muted:#7d8998;
+  --border:#243243;
+  --ok:#31d77a;
+  --ok-bg:#139545;
   --warn:#ffd166;
   --bad:#ff7b7b;
-  --frost:#78bfff;
+  --frost:#66b7ff;
+  --temp-icon:#ff8585;
+  --button:#294561;
   --shadow:rgba(0,0,0,.35);
-  --button:#333;
 }
 
 @media (prefers-color-scheme:light){
   :root{
     color-scheme:light;
-    --bg:#f3f4f6;
-    --card:#fff;
+    --bg:#eef2f6;
+    --panel:#ffffff;
+    --panel2:#f8fafc;
     --text:#111827;
-    --secondary:#4b5563;
-    --muted:#9ca3af;
-    --border:#e5e7eb;
-    --ok:#287a3d;
+    --secondary:#596579;
+    --muted:#8893a3;
+    --border:#dde3ea;
+    --ok:#21884a;
+    --ok-bg:#2f9a52;
     --warn:#8a6500;
     --bad:#b42318;
-    --frost:#2778c4;
+    --frost:#2c7dc0;
+    --temp-icon:#d94b4b;
+    --button:#d9e5ef;
     --shadow:rgba(0,0,0,.10);
-    --button:#e5e7eb;
   }
 }
 
@@ -61,7 +67,7 @@ body{
 body{
   margin:0;
   padding:
-    calc(12px + env(safe-area-inset-top))
+    calc(16px + env(safe-area-inset-top))
     16px
     calc(28px + env(safe-area-inset-bottom));
   font-family:
@@ -70,9 +76,10 @@ body{
     "Segoe UI",
     Arial,
     sans-serif;
-  background:var(--bg);
+  background:
+    radial-gradient(circle at top, rgba(30,58,85,.22), transparent 35%),
+    var(--bg);
   color:var(--text);
-  text-align:center;
 }
 
 .wrap{
@@ -81,97 +88,129 @@ body{
 }
 
 h1{
-  font-size:28px;
-  margin:5px 0 2px;
+  text-align:center;
+  font-size:31px;
+  line-height:1.1;
+  margin:10px 0 6px;
+  letter-spacing:-.02em;
 }
 
 .remote{
-  font-size:12px;
-  letter-spacing:.16em;
+  text-align:center;
+  font-size:13px;
+  letter-spacing:.22em;
   text-transform:uppercase;
-  color:var(--muted);
-  margin-bottom:8px;
+  color:var(--secondary);
+  margin-bottom:22px;
 }
 
-.status{
-  font-size:13px;
-  color:var(--muted);
-  margin:10px 0 12px;
+.statusCard{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:20px 18px;
+  margin-bottom:18px;
+  box-shadow:0 8px 26px var(--shadow);
+  text-align:left;
+}
+
+.statusTop{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:18px;
+  font-weight:650;
+}
+
+.statusDot{
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:var(--muted);
+  flex:0 0 auto;
+}
+
+.statusCard.ok .statusDot{
+  background:var(--ok);
+  box-shadow:0 0 12px rgba(49,215,122,.45);
+}
+
+.statusCard.warn .statusDot{
+  background:var(--warn);
+}
+
+.statusCard.bad .statusDot{
+  background:var(--bad);
+}
+
+.statusSub{
+  color:var(--secondary);
+  font-size:14px;
+  margin-top:8px;
+  margin-left:24px;
   line-height:1.45;
 }
 
-.status strong{
-  font-weight:700;
-}
-
-.status.ok strong{
-  color:var(--ok);
-}
-
-.status.warn strong{
-  color:var(--warn);
-}
-
-.status.bad strong{
-  color:var(--bad);
-}
-
 .local-link{
-  display:inline-flex;
+  display:flex;
   align-items:center;
   justify-content:center;
-  gap:7px;
+  gap:10px;
+  width:100%;
   text-decoration:none;
   border:1px solid var(--border);
-  border-radius:11px;
-  background:var(--card);
-  color:var(--text);
-  padding:10px 15px;
-  font-size:13px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#263c54,#213348);
+  color:#fff;
+  padding:17px 18px;
+  font-size:18px;
   font-weight:650;
-  margin:0 0 8px;
-  box-shadow:0 2px 7px var(--shadow);
+  margin-bottom:20px;
+  box-shadow:0 5px 16px var(--shadow);
+}
+
+@media (prefers-color-scheme:light){
+  .local-link{
+    color:var(--text);
+    background:var(--panel);
+  }
 }
 
 .local-link:active{
-  transform:scale(.98);
+  transform:scale(.985);
 }
 
-.local-icon{
-  font-size:15px;
-  line-height:1;
+.local-link svg{
+  width:24px;
+  height:24px;
+  stroke:currentColor;
+  fill:none;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
 }
-
-/* ================================
-   STATUS ICON STRIP
-   ================================ */
 
 .statusIcons{
   display:flex;
   justify-content:center;
-  align-items:center;
-  gap:14px;
-  min-height:46px;
-  margin:4px 0 18px;
+  gap:18px;
+  margin:2px 0 22px;
 }
 
 .statusIcon{
-  width:46px;
-  height:46px;
-  border-radius:14px;
+  width:74px;
+  height:74px;
+  border-radius:20px;
   display:flex;
   align-items:center;
   justify-content:center;
-  box-shadow:0 3px 10px var(--shadow);
-  transition:
-    background .25s ease,
-    color .25s ease,
-    opacity .25s ease;
+  box-shadow:0 8px 20px var(--shadow);
+  border:1px solid var(--border);
 }
 
 .statusIcon svg{
-  width:27px;
-  height:27px;
+  width:40px;
+  height:40px;
   fill:none;
   stroke:currentColor;
   stroke-width:2;
@@ -179,83 +218,155 @@ h1{
   stroke-linejoin:round;
 }
 
-/* Inverter */
-
 .inverterIcon{
-  background:#3a3a3a;
-  color:#9a9a9a;
+  background:#303946;
+  color:#8e9bab;
 }
 
 .inverterIcon.on{
-  background:#38a653;
-  color:#ffffff;
+  background:linear-gradient(180deg,#1fb45b,#168b45);
+  color:#fff;
+  border-color:#24b862;
+  box-shadow:
+    0 8px 22px rgba(0,0,0,.28),
+    0 0 22px rgba(31,180,91,.22);
 }
 
-/* Frost */
-
 .frostIcon{
-  background:var(--card);
-  color:var(--frost);
   display:none;
+  background:#182330;
+  color:var(--frost);
 }
 
 .frostIcon.show{
   display:flex;
 }
 
-/* ================================ */
-
-.card{
-  background:var(--card);
-  border-radius:18px;
-  padding:22px;
-  margin:15px 0;
-  box-shadow:0 4px 12px var(--shadow);
+.tempCard{
+  display:grid;
+  grid-template-columns:44px 1fr 24px;
+  align-items:center;
+  gap:14px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:22px 18px;
+  margin:16px 0;
+  box-shadow:0 8px 26px var(--shadow);
 }
 
-.label{
-  font-size:20px;
+.tempIcon{
+  color:var(--temp-icon);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.tempIcon svg{
+  width:30px;
+  height:30px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.tempText{
+  text-align:left;
+}
+
+.tempLabel{
   color:var(--secondary);
+  font-size:18px;
+  margin-bottom:4px;
 }
 
-.temp{
-  font-size:48px;
-  font-weight:750;
-  letter-spacing:-.03em;
-  margin-top:8px;
+.tempValue{
+  font-size:43px;
+  line-height:1;
+  font-weight:760;
+  letter-spacing:-.035em;
 }
 
-.footer{
-  font-size:12px;
-  color:var(--muted);
-  line-height:1.6;
-  margin-top:24px;
+.chevron{
+  color:#738096;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.chevron svg{
+  width:24px;
+  height:24px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2.4;
+  stroke-linecap:round;
+  stroke-linejoin:round;
 }
 
 button{
-  border:0;
-  border-radius:11px;
-  background:var(--button);
-  color:var(--text);
-  padding:11px 16px;
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:linear-gradient(180deg,#345675,#2b4864);
+  color:#fff;
+  padding:17px 18px;
   font:inherit;
+  font-size:18px;
   font-weight:650;
-  margin-top:12px;
+  margin-top:18px;
   cursor:pointer;
+  box-shadow:0 5px 16px var(--shadow);
+}
+
+@media (prefers-color-scheme:light){
+  button{
+    color:var(--text);
+    background:var(--panel);
+  }
+}
+
+button:active{
+  transform:scale(.985);
+}
+
+.refreshInner{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+.refreshInner svg{
+  width:24px;
+  height:24px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.footer{
+  text-align:center;
+  font-size:12px;
+  color:var(--secondary);
+  line-height:1.55;
+  margin-top:26px;
 }
 
 .errorBox{
   display:none;
-  background:var(--card);
+  background:var(--panel);
   border:1px solid var(--border);
   border-radius:14px;
   padding:14px;
-  margin:16px 0;
+  margin:0 0 16px;
   color:var(--bad);
   font-size:13px;
 }
-
-/* Splash screen */
 
 #splash{
   position:fixed;
@@ -271,9 +382,7 @@ button{
   background:#07101d;
   opacity:1;
   visibility:visible;
-  transition:
-    opacity .65s ease,
-    visibility .65s ease;
+  transition:opacity .65s ease,visibility .65s ease;
 }
 
 #splash.hide{
@@ -338,20 +447,12 @@ button{
 }
 
 @keyframes pulse{
-  0%,100%{
-    opacity:.3;
-  }
-
-  50%{
-    opacity:1;
-  }
+  0%,100%{opacity:.3}
+  50%{opacity:1}
 }
 
 @media (prefers-reduced-motion:reduce){
-  #splash{
-    transition:none;
-  }
-
+  #splash{transition:none}
   .splash-icon,
   .splash-title,
   .splash-status,
@@ -365,64 +466,45 @@ button{
 <body>
 
 <div id="splash" aria-hidden="true">
-
   <div class="splash-inner">
-
-    <img
-      class="splash-icon"
-      src="motorhome-icon.png"
-      alt=""
-    >
-
-    <div class="splash-title">
-      Motorhome Monitor
-    </div>
-
+    <img class="splash-icon" src="motorhome-icon.png" alt="">
+    <div class="splash-title">Motorhome Monitor</div>
     <div class="splash-status">
       Connecting<span class="splash-dot"></span>
     </div>
-
   </div>
-
 </div>
 
 <main class="wrap">
 
   <h1>Motorhome Monitor</h1>
+  <div class="remote">Remote</div>
 
-  <div class="remote">
-    Remote
-  </div>
+  <section class="statusCard" id="statusCard">
+    <div class="statusTop">
+      <span class="statusDot"></span>
+      <span id="statusTitle">Connecting to Motorhome data…</span>
+    </div>
+    <div class="statusSub" id="statusSub">
+      Waiting for latest update
+    </div>
+  </section>
 
-  <div
-    class="status"
-    id="status"
-  >
-    Connecting to Motorhome data…
-  </div>
-
-  <div
-    class="errorBox"
-    id="errorBox"
-  ></div>
+  <div class="errorBox" id="errorBox"></div>
 
   <a
     class="local-link"
     href="http://motorhome.local/"
   >
-    <span class="local-icon">⌂</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 11.5L12 4l9 7.5"></path>
+      <path d="M5.5 10.5V20h13v-9.5"></path>
+      <path d="M9.5 20v-5h5v5"></path>
+    </svg>
     Local Dashboard
   </a>
 
-
-  <!-- STATUS ICONS -->
-
-  <div
-    class="statusIcons"
-    aria-label="Motorhome status"
-  >
-
-    <!-- INVERTER -->
+  <div class="statusIcons" aria-label="Motorhome status">
 
     <div
       class="statusIcon inverterIcon"
@@ -430,31 +512,11 @@ button{
       title="Inverter supply OFF"
       aria-label="Inverter supply OFF"
     >
-
-      <svg
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-      >
-        <rect
-          x="3"
-          y="5"
-          width="18"
-          height="14"
-          rx="2"
-        ></rect>
-
-        <path
-          d="M6.5 12
-             c1.2-2.2 2.4-2.2 3.6 0
-             s2.4 2.2 3.6 0
-             2.4-2.2 3.8 0"
-        ></path>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+        <path d="M6.5 12c1.2-2.2 2.4-2.2 3.6 0s2.4 2.2 3.6 0 2.4-2.2 3.8 0"></path>
       </svg>
-
     </div>
-
-
-    <!-- FROST -->
 
     <div
       class="statusIcon frostIcon"
@@ -462,260 +524,212 @@ button{
       title="Outside temperature below 3°C"
       aria-label="Outside temperature below 3 degrees Celsius"
     >
-
-      <svg
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-      >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M12 2v20"></path>
         <path d="M4.22 6.5l15.56 11"></path>
         <path d="M19.78 6.5l-15.56 11"></path>
-
         <path d="M9 4l3 3 3-3"></path>
         <path d="M9 20l3-3 3 3"></path>
-
         <path d="M5.5 8.3l4.1.8-.8-4"></path>
         <path d="M18.5 15.7l-4.1-.8.8 4"></path>
-
         <path d="M18.5 8.3l-4.1.8.8-4"></path>
         <path d="M5.5 15.7l4.1-.8-.8 4"></path>
       </svg>
-
     </div>
 
   </div>
 
+  <section class="tempCard">
+    <div class="tempIcon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M10 14.5V5a2 2 0 1 1 4 0v9.5"></path>
+        <circle cx="12" cy="17" r="4"></circle>
+        <path d="M12 8v9"></path>
+      </svg>
+    </div>
 
-  <section class="card">
-    <div class="label">Front</div>
-    <div class="temp" id="front">--.- °C</div>
+    <div class="tempText">
+      <div class="tempLabel">Front</div>
+      <div class="tempValue" id="front">--.- °C</div>
+    </div>
+
+    <div class="chevron">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M9 5l7 7-7 7"></path>
+      </svg>
+    </div>
   </section>
 
-  <section class="card">
-    <div class="label">Back</div>
-    <div class="temp" id="back">--.- °C</div>
+  <section class="tempCard">
+    <div class="tempIcon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M10 14.5V5a2 2 0 1 1 4 0v9.5"></path>
+        <circle cx="12" cy="17" r="4"></circle>
+        <path d="M12 8v9"></path>
+      </svg>
+    </div>
+
+    <div class="tempText">
+      <div class="tempLabel">Back</div>
+      <div class="tempValue" id="back">--.- °C</div>
+    </div>
+
+    <div class="chevron">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M9 5l7 7-7 7"></path>
+      </svg>
+    </div>
   </section>
 
-  <section class="card">
-    <div class="label">Outside</div>
-    <div class="temp" id="outside">--.- °C</div>
+  <section class="tempCard">
+    <div class="tempIcon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M10 14.5V5a2 2 0 1 1 4 0v9.5"></path>
+        <circle cx="12" cy="17" r="4"></circle>
+        <path d="M12 8v9"></path>
+      </svg>
+    </div>
+
+    <div class="tempText">
+      <div class="tempLabel">Outside</div>
+      <div class="tempValue" id="outside">--.- °C</div>
+    </div>
+
+    <div class="chevron">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M9 5l7 7-7 7"></path>
+      </svg>
+    </div>
   </section>
 
-  <button
-    type="button"
-    id="refresh"
-  >
-    Refresh now
+  <button type="button" id="refresh">
+    <span class="refreshInner">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 11a8 8 0 1 0-2.3 5.7"></path>
+        <path d="M20 4v7h-7"></path>
+      </svg>
+      Refresh now
+    </span>
   </button>
 
   <div class="footer">
-    ThingSpeak channel 3479295
-    <br>
+    ThingSpeak channel 3479295<br>
     Dashboard refreshes automatically every 60 seconds
   </div>
 
 </main>
 
-
 <script>
-
-/* ==================================================
-   SETTINGS
-   ================================================== */
-
 const CHANNEL_ID = 3479295;
 
 const API =
   `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=1`;
 
 const REFRESH_MS = 60000;
-
 const STALE_WARN_MINUTES = 3;
-
 const OFFLINE_MINUTES = 10;
-
 const FROST_WARNING_TEMP_C = 3.0;
 
-
-/* ==================================================
-   SPLASH
-   ================================================== */
-
 const SPLASH_MIN_MS = 2200;
-
 const SPLASH_MAX_MS = 6000;
 
 const splashStarted = Date.now();
-
 let splashClosed = false;
-
-
-/* ==================================================
-   HELPERS
-   ================================================== */
 
 const $ = id =>
   document.getElementById(id);
 
-
 function temp(value){
-
-  const n =
-    Number.parseFloat(value);
+  const n = Number.parseFloat(value);
 
   return Number.isFinite(n)
     ? `${n.toFixed(1)} °C`
     : "--.- °C";
-
 }
 
-
-/* ==================================================
-   INVERTER
-   ================================================== */
-
 function setInverter(value){
-
-  const el =
-    $("inverterIcon");
-
-  const n =
-    Number.parseInt(
-      value,
-      10
-    );
+  const el = $("inverterIcon");
+  const n = Number.parseInt(value,10);
 
   el.classList.remove("on");
 
   if(n === 1){
-
     el.classList.add("on");
-
-    el.title =
-      "Inverter supply ON";
-
+    el.title = "Inverter supply ON";
     el.setAttribute(
       "aria-label",
       "Inverter supply ON"
     );
-
   }
   else{
-
-    el.title =
-      "Inverter supply OFF";
-
+    el.title = "Inverter supply OFF";
     el.setAttribute(
       "aria-label",
       "Inverter supply OFF"
     );
-
   }
-
 }
 
-
-/* ==================================================
-   FROST WARNING
-   ================================================== */
-
 function setFrostWarning(value){
-
-  const el =
-    $("frostIcon");
-
-  const temperature =
-    Number.parseFloat(value);
+  const el = $("frostIcon");
+  const temperature = Number.parseFloat(value);
 
   if(
     Number.isFinite(temperature) &&
-    temperature < FROST_WARNING_TEMP_C
+    temperature <= FROST_WARNING_TEMP_C
   ){
-
     el.classList.add("show");
 
     el.title =
       `Outside temperature ${temperature.toFixed(1)}°C`;
-
   }
   else{
-
     el.classList.remove("show");
-
   }
-
 }
 
-
-/* ==================================================
-   AGE TEXT
-   ================================================== */
-
 function ageText(ms){
-
   const seconds =
     Math.max(
       0,
-      Math.floor(ms / 1000)
+      Math.floor(ms/1000)
     );
 
-  if(seconds < 60){
+  if(seconds < 60)
     return `${seconds} sec ago`;
-  }
 
   const minutes =
-    Math.floor(
-      seconds / 60
-    );
+    Math.floor(seconds/60);
 
-  if(minutes < 60){
+  if(minutes < 60)
     return `${minutes} min ago`;
-  }
 
   const hours =
-    Math.floor(
-      minutes / 60
-    );
+    Math.floor(minutes/60);
 
   const rem =
     minutes % 60;
 
   if(hours < 24){
-
     return rem
       ? `${hours} hr ${rem} min ago`
       : `${hours} hr ago`;
-
   }
 
   const days =
-    Math.floor(
-      hours / 24
-    );
+    Math.floor(hours/24);
 
-  return `${days} day${days === 1 ? "" : "s"} ago`;
-
+  return `${days} day${days===1?"":"s"} ago`;
 }
 
-
-/* ==================================================
-   MOTORHOME ONLINE STATUS
-   ================================================== */
-
 function setStatus(createdAt){
+  const card = $("statusCard");
+  const title = $("statusTitle");
+  const sub = $("statusSub");
 
-  const el =
-    $("status");
-
-  const t =
-    new Date(createdAt);
-
-  const age =
-    Date.now() -
-    t.getTime();
-
-  const mins =
-    age / 60000;
+  const t = new Date(createdAt);
+  const age = Date.now() - t.getTime();
+  const mins = age / 60000;
 
   const clock =
     t.toLocaleTimeString(
@@ -737,50 +751,39 @@ function setStatus(createdAt){
       }
     );
 
-  el.className =
-    "status";
-
+  card.className = "statusCard";
 
   if(mins >= OFFLINE_MINUTES){
+    card.classList.add("bad");
 
-    el.classList.add("bad");
+    title.textContent =
+      "Motorhome may be offline";
 
-    el.innerHTML =
-      `<strong>Motorhome may be offline</strong><br>` +
+    sub.textContent =
       `Last update ${ageText(age)} · ${date} ${clock}`;
-
   }
   else if(mins >= STALE_WARN_MINUTES){
+    card.classList.add("warn");
 
-    el.classList.add("warn");
+    title.textContent =
+      "Update delayed";
 
-    el.innerHTML =
-      `<strong>Update delayed</strong><br>` +
+    sub.textContent =
       `Last update ${ageText(age)} · ${clock}`;
-
   }
   else{
+    card.classList.add("ok");
 
-    el.classList.add("ok");
+    title.textContent =
+      "Motorhome online";
 
-    el.innerHTML =
-      `<strong>Motorhome online</strong><br>` +
+    sub.textContent =
       `Updated ${ageText(age)} · ${clock}`;
-
   }
-
 }
 
-
-/* ==================================================
-   SPLASH FUNCTIONS
-   ================================================== */
-
 function closeSplash(){
-
-  if(splashClosed){
-    return;
-  }
+  if(splashClosed) return;
 
   splashClosed = true;
 
@@ -789,24 +792,18 @@ function closeSplash(){
     .add("hide");
 
   window.setTimeout(
-    () => {
-
-      const splash =
-        $("splash");
+    ()=>{
+      const splash = $("splash");
 
       if(splash){
         splash.remove();
       }
-
     },
     800
   );
-
 }
 
-
 function closeSplashWhenReady(){
-
   const elapsed =
     Date.now() -
     splashStarted;
@@ -821,41 +818,27 @@ function closeSplashWhenReady(){
     closeSplash,
     remaining
   );
-
 }
-
 
 window.setTimeout(
   closeSplash,
   SPLASH_MAX_MS
 );
 
-
-/* ==================================================
-   LOAD THINGSPEAK DATA
-   ================================================== */
-
 async function loadData(){
-
-  const errorBox =
-    $("errorBox");
+  const errorBox = $("errorBox");
 
   try{
-
     const response =
       await fetch(
         API,
-        {
-          cache:"no-store"
-        }
+        {cache:"no-store"}
       );
 
     if(!response.ok){
-
       throw new Error(
         `ThingSpeak returned HTTP ${response.status}`
       );
-
     }
 
     const data =
@@ -865,11 +848,9 @@ async function loadData(){
       !data.feeds ||
       !data.feeds.length
     ){
-
       throw new Error(
         "No readings have been returned yet."
       );
-
     }
 
     const reading =
@@ -903,35 +884,29 @@ async function loadData(){
 
     errorBox.textContent =
       "";
-
   }
   catch(err){
+    const card = $("statusCard");
 
-    $("status").className =
-      "status bad";
+    card.className =
+      "statusCard bad";
 
-    $("status").innerHTML =
-      "<strong>Unable to reach remote data</strong>";
+    $("statusTitle").textContent =
+      "Unable to reach remote data";
+
+    $("statusSub").textContent =
+      "No current ThingSpeak response";
 
     errorBox.textContent =
       err.message;
 
     errorBox.style.display =
       "block";
-
   }
   finally{
-
     closeSplashWhenReady();
-
   }
-
 }
-
-
-/* ==================================================
-   REFRESH
-   ================================================== */
 
 $("refresh")
   .addEventListener(
@@ -945,7 +920,6 @@ setInterval(
   loadData,
   REFRESH_MS
 );
-
 </script>
 
 </body>
