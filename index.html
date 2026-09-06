@@ -139,6 +139,25 @@ h1{
   margin-top:8px;
 }
 
+.inverter-state{
+  font-size:42px;
+  font-weight:800;
+  letter-spacing:.03em;
+  margin-top:8px;
+}
+
+.inverter-on{
+  color:var(--ok);
+}
+
+.inverter-off{
+  color:var(--muted);
+}
+
+.inverter-unknown{
+  color:var(--warn);
+}
+
 .footer{
   font-size:12px;
   color:var(--muted);
@@ -299,6 +318,16 @@ button{
     <div class="temp" id="outside">--.- °C</div>
   </section>
 
+  <section class="card">
+    <div class="label">Inverter</div>
+    <div
+      class="inverter-state inverter-unknown"
+      id="inverter"
+    >
+      UNKNOWN
+    </div>
+  </section>
+
   <button type="button" id="refresh">Refresh now</button>
 
   <div class="footer">
@@ -310,6 +339,7 @@ button{
 
 <script>
 const CHANNEL_ID = 3479295;
+
 const API =
   `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=1`;
 
@@ -327,9 +357,30 @@ const $ = id => document.getElementById(id);
 
 function temp(value){
   const n = Number.parseFloat(value);
+
   return Number.isFinite(n)
     ? `${n.toFixed(1)} °C`
     : "--.- °C";
+}
+
+function setInverter(value){
+  const el = $("inverter");
+  const n = Number.parseInt(value,10);
+
+  el.className="inverter-state";
+
+  if(n === 1){
+    el.textContent="ON";
+    el.classList.add("inverter-on");
+  }
+  else if(n === 0){
+    el.textContent="OFF";
+    el.classList.add("inverter-off");
+  }
+  else{
+    el.textContent="UNKNOWN";
+    el.classList.add("inverter-unknown");
+  }
 }
 
 function ageText(ms){
@@ -381,18 +432,21 @@ function setStatus(createdAt){
 
   if(mins >= OFFLINE_MINUTES){
     el.classList.add("bad");
+
     el.innerHTML =
       `<strong>Motorhome may be offline</strong><br>`+
       `Last update ${ageText(age)} · ${date} ${clock}`;
   }
   else if(mins >= STALE_WARN_MINUTES){
     el.classList.add("warn");
+
     el.innerHTML =
       `<strong>Update delayed</strong><br>`+
       `Last update ${ageText(age)} · ${clock}`;
   }
   else{
     el.classList.add("ok");
+
     el.innerHTML =
       `<strong>Motorhome online</strong><br>`+
       `Updated ${ageText(age)} · ${clock}`;
@@ -414,16 +468,26 @@ function closeSplash(){
 function closeSplashWhenReady(){
   const elapsed=Date.now()-splashStarted;
   const remaining=Math.max(0,SPLASH_MIN_MS-elapsed);
-  window.setTimeout(closeSplash,remaining);
+
+  window.setTimeout(
+    closeSplash,
+    remaining
+  );
 }
 
-window.setTimeout(closeSplash,SPLASH_MAX_MS);
+window.setTimeout(
+  closeSplash,
+  SPLASH_MAX_MS
+);
 
 async function loadData(){
   const errorBox=$("errorBox");
 
   try{
-    const response=await fetch(API,{cache:"no-store"});
+    const response=await fetch(
+      API,
+      {cache:"no-store"}
+    );
 
     if(!response.ok){
       throw new Error(
@@ -439,34 +503,56 @@ async function loadData(){
       );
     }
 
-    const reading=data.feeds[data.feeds.length-1];
+    const reading=
+      data.feeds[data.feeds.length-1];
 
-    $("front").textContent=temp(reading.field1);
-    $("back").textContent=temp(reading.field2);
-    $("outside").textContent=temp(reading.field3);
+    $("front").textContent=
+      temp(reading.field1);
 
-    setStatus(reading.created_at);
+    $("back").textContent=
+      temp(reading.field2);
+
+    $("outside").textContent=
+      temp(reading.field3);
+
+    setInverter(
+      reading.field4
+    );
+
+    setStatus(
+      reading.created_at
+    );
 
     errorBox.style.display="none";
     errorBox.textContent="";
   }
   catch(err){
     $("status").className="status bad";
+
     $("status").innerHTML=
       "<strong>Unable to reach remote data</strong>";
 
     errorBox.textContent=err.message;
     errorBox.style.display="block";
+
+    setInverter(null);
   }
   finally{
     closeSplashWhenReady();
   }
 }
 
-$("refresh").addEventListener("click",loadData);
+$("refresh").addEventListener(
+  "click",
+  loadData
+);
 
 loadData();
-setInterval(loadData,REFRESH_MS);
+
+setInterval(
+  loadData,
+  REFRESH_MS
+);
 </script>
 
 </body>
