@@ -116,64 +116,6 @@ h1{
   color:var(--bad);
 }
 
-/* ================================
-   STATUS ICON STRIP
-   ================================ */
-
-.statusIcons{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:14px;
-  min-height:48px;
-  margin:4px 0 16px;
-}
-
-.statusIcon{
-  width:46px;
-  height:46px;
-  border-radius:14px;
-  background:var(--card);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 3px 10px var(--shadow);
-  transition:
-    color .25s ease,
-    opacity .25s ease;
-}
-
-.statusIcon svg{
-  width:27px;
-  height:27px;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:2;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-
-/* Inverter is always visible */
-.inverterIcon{
-  color:var(--muted);
-}
-
-.inverterIcon.on{
-  color:var(--ok);
-}
-
-/* Frost is hidden unless required */
-.frostIcon{
-  color:var(--frost);
-  display:none;
-}
-
-.frostIcon.show{
-  display:flex;
-}
-
-/* ================================ */
-
 .local-link{
   display:inline-flex;
   align-items:center;
@@ -199,6 +141,69 @@ h1{
   font-size:15px;
   line-height:1;
 }
+
+/* ================================
+   STATUS ICON STRIP
+   ================================ */
+
+.statusIcons{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  min-height:46px;
+  margin:4px 0 18px;
+}
+
+.statusIcon{
+  width:46px;
+  height:46px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 3px 10px var(--shadow);
+  transition:
+    background .25s ease,
+    color .25s ease,
+    opacity .25s ease;
+}
+
+.statusIcon svg{
+  width:27px;
+  height:27px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+/* Inverter */
+
+.inverterIcon{
+  background:#3a3a3a;
+  color:#9a9a9a;
+}
+
+.inverterIcon.on{
+  background:#38a653;
+  color:#ffffff;
+}
+
+/* Frost */
+
+.frostIcon{
+  background:var(--card);
+  color:var(--frost);
+  display:none;
+}
+
+.frostIcon.show{
+  display:flex;
+}
+
+/* ================================ */
 
 .card{
   background:var(--card);
@@ -410,9 +415,7 @@ button{
   </a>
 
 
-  <!-- =============================
-       MOTORHOME STATUS ICONS
-       ============================= -->
+  <!-- STATUS ICONS -->
 
   <div
     class="statusIcons"
@@ -432,7 +435,6 @@ button{
         viewBox="0 0 24 24"
         aria-hidden="true"
       >
-
         <rect
           x="3"
           y="5"
@@ -442,12 +444,11 @@ button{
         ></rect>
 
         <path
-          d="M7 12
-             c1.2-2 2.4-2 3.6 0
-             s2.4 2 3.6 0
-             2.4-2 3.6 0"
+          d="M6.5 12
+             c1.2-2.2 2.4-2.2 3.6 0
+             s2.4 2.2 3.6 0
+             2.4-2.2 3.8 0"
         ></path>
-
       </svg>
 
     </div>
@@ -466,25 +467,18 @@ button{
         viewBox="0 0 24 24"
         aria-hidden="true"
       >
-
         <path d="M12 2v20"></path>
-
         <path d="M4.22 6.5l15.56 11"></path>
-
         <path d="M19.78 6.5l-15.56 11"></path>
 
         <path d="M9 4l3 3 3-3"></path>
-
         <path d="M9 20l3-3 3 3"></path>
 
         <path d="M5.5 8.3l4.1.8-.8-4"></path>
-
         <path d="M18.5 15.7l-4.1-.8.8 4"></path>
 
         <path d="M18.5 8.3l-4.1.8.8-4"></path>
-
         <path d="M5.5 15.7l4.1-.8-.8 4"></path>
-
       </svg>
 
     </div>
@@ -493,52 +487,19 @@ button{
 
 
   <section class="card">
-
-    <div class="label">
-      Front
-    </div>
-
-    <div
-      class="temp"
-      id="front"
-    >
-      --.- °C
-    </div>
-
+    <div class="label">Front</div>
+    <div class="temp" id="front">--.- °C</div>
   </section>
-
 
   <section class="card">
-
-    <div class="label">
-      Back
-    </div>
-
-    <div
-      class="temp"
-      id="back"
-    >
-      --.- °C
-    </div>
-
+    <div class="label">Back</div>
+    <div class="temp" id="back">--.- °C</div>
   </section>
-
 
   <section class="card">
-
-    <div class="label">
-      Outside
-    </div>
-
-    <div
-      class="temp"
-      id="outside"
-    >
-      --.- °C
-    </div>
-
+    <div class="label">Outside</div>
+    <div class="temp" id="outside">--.- °C</div>
   </section>
-
 
   <button
     type="button"
@@ -547,14 +508,10 @@ button{
     Refresh now
   </button>
 
-
   <div class="footer">
-
     ThingSpeak channel 3479295
     <br>
-
     Dashboard refreshes automatically every 60 seconds
-
   </div>
 
 </main>
@@ -576,8 +533,6 @@ const REFRESH_MS = 60000;
 const STALE_WARN_MINUTES = 3;
 
 const OFFLINE_MINUTES = 10;
-
-/* Frost icon appears below this temperature */
 
 const FROST_WARNING_TEMP_C = 3.0;
 
@@ -611,6 +566,7 @@ function temp(value){
   return Number.isFinite(n)
     ? `${n.toFixed(1)} °C`
     : "--.- °C";
+
 }
 
 
@@ -704,9 +660,7 @@ function ageText(ms){
     );
 
   if(seconds < 60){
-
     return `${seconds} sec ago`;
-
   }
 
   const minutes =
@@ -715,9 +669,7 @@ function ageText(ms){
     );
 
   if(minutes < 60){
-
     return `${minutes} min ago`;
-
   }
 
   const hours =
@@ -836,7 +788,6 @@ function closeSplash(){
     .classList
     .add("hide");
 
-
   window.setTimeout(
     () => {
 
@@ -899,7 +850,6 @@ async function loadData(){
         }
       );
 
-
     if(!response.ok){
 
       throw new Error(
@@ -908,10 +858,8 @@ async function loadData(){
 
     }
 
-
     const data =
       await response.json();
-
 
     if(
       !data.feeds ||
@@ -924,14 +872,10 @@ async function loadData(){
 
     }
 
-
     const reading =
       data.feeds[
         data.feeds.length - 1
       ];
-
-
-    /* Temperatures */
 
     $("front").textContent =
       temp(reading.field1);
@@ -942,9 +886,6 @@ async function loadData(){
     $("outside").textContent =
       temp(reading.field3);
 
-
-    /* Status icons */
-
     setInverter(
       reading.field4
     );
@@ -953,13 +894,9 @@ async function loadData(){
       reading.field3
     );
 
-
-    /* Online status */
-
     setStatus(
       reading.created_at
     );
-
 
     errorBox.style.display =
       "none";
@@ -975,7 +912,6 @@ async function loadData(){
 
     $("status").innerHTML =
       "<strong>Unable to reach remote data</strong>";
-
 
     errorBox.textContent =
       err.message;
@@ -1003,9 +939,7 @@ $("refresh")
     loadData
   );
 
-
 loadData();
-
 
 setInterval(
   loadData,
