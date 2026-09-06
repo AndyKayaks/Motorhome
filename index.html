@@ -28,7 +28,9 @@
   --warn:#ffd166;
   --bad:#ff7b7b;
   --frost:#66b7ff;
-  --temp-icon:#ff8585;
+  --temp-cold:#69bfff;
+  --temp-mid:#7890a6;
+  --temp-warm:#ff7b5f;
   --shadow:rgba(0,0,0,.35);
 }
 
@@ -46,7 +48,9 @@
     --warn:#8a6500;
     --bad:#b42318;
     --frost:#2c7dc0;
-    --temp-icon:#d94b4b;
+    --temp-cold:#2f7fbf;
+    --temp-mid:#6e8192;
+    --temp-warm:#d8583e;
     --shadow:rgba(0,0,0,.10);
   }
 }
@@ -268,10 +272,10 @@ h1{
 }
 
 .tempIcon{
-  color:var(--temp-icon);
   display:flex;
   justify-content:center;
   margin-bottom:8px;
+  transition:color .25s ease;
 }
 
 .tempCard.full .tempIcon{
@@ -286,6 +290,18 @@ h1{
   stroke-width:2;
   stroke-linecap:round;
   stroke-linejoin:round;
+}
+
+.tempIcon.cold{
+  color:var(--temp-cold);
+}
+
+.tempIcon.mid{
+  color:var(--temp-mid);
+}
+
+.tempIcon.warm{
+  color:var(--temp-warm);
 }
 
 .tempLabel{
@@ -542,7 +558,7 @@ button:active{
   <div class="tempGrid">
 
     <section class="tempCard small">
-      <div class="tempIcon">
+      <div class="tempIcon" id="frontIcon">
         <svg viewBox="0 0 24 24">
           <path d="M10 14.5V5a2 2 0 1 1 4 0v9.5"></path>
           <circle cx="12" cy="17" r="4"></circle>
@@ -554,7 +570,7 @@ button:active{
     </section>
 
     <section class="tempCard small">
-      <div class="tempIcon">
+      <div class="tempIcon" id="backIcon">
         <svg viewBox="0 0 24 24">
           <path d="M10 14.5V5a2 2 0 1 1 4 0v9.5"></path>
           <circle cx="12" cy="17" r="4"></circle>
@@ -568,7 +584,7 @@ button:active{
   </div>
 
   <section class="tempCard full">
-    <div class="tempIcon">
+    <div class="tempIcon" id="outsideIcon">
       <svg viewBox="0 0 24 24">
         <path d="M10 14.5V5a2 2 0 1 1 4 0v9.5"></path>
         <circle cx="12" cy="17" r="4"></circle>
@@ -620,69 +636,78 @@ const $ = id =>
   document.getElementById(id);
 
 function temp(value){
-
-  const n =
-    Number.parseFloat(value);
+  const n = Number.parseFloat(value);
 
   return Number.isFinite(n)
     ? `${n.toFixed(1)} °C`
     : "--.- °C";
 }
 
+function temperatureClass(value){
+  const n = Number.parseFloat(value);
+
+  if(!Number.isFinite(n)){
+    return "mid";
+  }
+
+  if(n < 9){
+    return "cold";
+  }
+
+  if(n < 18){
+    return "mid";
+  }
+
+  return "warm";
+}
+
+function setTemperatureIcon(iconId,value){
+  const el = $(iconId);
+
+  el.classList.remove(
+    "cold",
+    "mid",
+    "warm"
+  );
+
+  el.classList.add(
+    temperatureClass(value)
+  );
+}
+
 function setInverter(value){
-
-  const el =
-    $("inverterIcon");
-
-  const n =
-    Number.parseInt(value,10);
+  const el = $("inverterIcon");
+  const n = Number.parseInt(value,10);
 
   el.classList.remove("on");
 
   if(n === 1){
-
     el.classList.add("on");
-
-    el.title =
-      "Inverter supply ON";
-
+    el.title = "Inverter supply ON";
   }
   else{
-
-    el.title =
-      "Inverter supply OFF";
-
+    el.title = "Inverter supply OFF";
   }
 }
 
 function setFrostWarning(value){
-
-  const el =
-    $("frostIcon");
-
-  const temperature =
-    Number.parseFloat(value);
+  const el = $("frostIcon");
+  const temperature = Number.parseFloat(value);
 
   if(
     Number.isFinite(temperature) &&
     temperature <= FROST_WARNING_TEMP_C
   ){
-
     el.classList.add("show");
-
     el.title =
       `Outside temperature ${temperature.toFixed(1)}°C`;
-
   }
   else{
-
     el.classList.remove("show");
-
   }
 }
 
 function ageText(ms){
-
   const seconds =
     Math.max(
       0,
@@ -705,11 +730,9 @@ function ageText(ms){
     minutes % 60;
 
   if(hours < 24){
-
     return rem
       ? `${hours} hr ${rem} min ago`
       : `${hours} hr ago`;
-
   }
 
   const days =
@@ -719,25 +742,13 @@ function ageText(ms){
 }
 
 function setStatus(createdAt){
+  const card = $("statusCard");
+  const title = $("statusTitle");
+  const sub = $("statusSub");
 
-  const card =
-    $("statusCard");
-
-  const title =
-    $("statusTitle");
-
-  const sub =
-    $("statusSub");
-
-  const t =
-    new Date(createdAt);
-
-  const age =
-    Date.now() -
-    t.getTime();
-
-  const mins =
-    age / 60000;
+  const t = new Date(createdAt);
+  const age = Date.now() - t.getTime();
+  const mins = age / 60000;
 
   const clock =
     t.toLocaleTimeString(
@@ -759,46 +770,32 @@ function setStatus(createdAt){
       }
     );
 
-  card.className =
-    "statusCard";
+  card.className = "statusCard";
 
   if(mins >= OFFLINE_MINUTES){
-
     card.classList.add("bad");
-
     title.textContent =
       "Motorhome may be offline";
-
     sub.textContent =
       `Last update ${ageText(age)} · ${date} ${clock}`;
-
   }
   else if(mins >= STALE_WARN_MINUTES){
-
     card.classList.add("warn");
-
     title.textContent =
       "Update delayed";
-
     sub.textContent =
       `Last update ${ageText(age)} · ${clock}`;
-
   }
   else{
-
     card.classList.add("ok");
-
     title.textContent =
       "Motorhome online";
-
     sub.textContent =
       `Updated ${ageText(age)} · ${clock}`;
-
   }
 }
 
 function closeSplash(){
-
   if(splashClosed) return;
 
   splashClosed = true;
@@ -809,8 +806,7 @@ function closeSplash(){
 
   window.setTimeout(
     ()=>{
-      const splash =
-        $("splash");
+      const splash = $("splash");
 
       if(splash){
         splash.remove();
@@ -821,7 +817,6 @@ function closeSplash(){
 }
 
 function closeSplashWhenReady(){
-
   const elapsed =
     Date.now() -
     splashStarted;
@@ -844,12 +839,10 @@ window.setTimeout(
 );
 
 async function loadData(){
-
   const errorBox =
     $("errorBox");
 
   try{
-
     const response =
       await fetch(
         API,
@@ -857,11 +850,9 @@ async function loadData(){
       );
 
     if(!response.ok){
-
       throw new Error(
         `ThingSpeak returned HTTP ${response.status}`
       );
-
     }
 
     const data =
@@ -871,11 +862,9 @@ async function loadData(){
       !data.feeds ||
       !data.feeds.length
     ){
-
       throw new Error(
         "No readings have been returned yet."
       );
-
     }
 
     const reading =
@@ -891,6 +880,21 @@ async function loadData(){
 
     $("outside").textContent =
       temp(reading.field3);
+
+    setTemperatureIcon(
+      "frontIcon",
+      reading.field1
+    );
+
+    setTemperatureIcon(
+      "backIcon",
+      reading.field2
+    );
+
+    setTemperatureIcon(
+      "outsideIcon",
+      reading.field3
+    );
 
     setInverter(
       reading.field4
@@ -909,10 +913,8 @@ async function loadData(){
 
     errorBox.textContent =
       "";
-
   }
   catch(err){
-
     const card =
       $("statusCard");
 
@@ -930,12 +932,9 @@ async function loadData(){
 
     errorBox.style.display =
       "block";
-
   }
   finally{
-
     closeSplashWhenReady();
-
   }
 }
 
